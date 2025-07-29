@@ -1,5 +1,7 @@
 // Game state management
-use crate::types::{PlayerInfo, RoomInfo, GamePhase, Card, GameAction, HandWinner, PotWinner, Uuid};
+use yew::prelude::*;
+use crate::types::{PlayerInfo, RoomInfo, GamePhase, Card, GameAction, HandWinner, PotWinner};
+use uuid::Uuid;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]

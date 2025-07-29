@@ -37,8 +37,6 @@ web-sys = { version = "0.3", features = [
   "Location",
   "History",
   "Storage",
-  "LocalStorage",
-  "SessionStorage",
   "WebGlRenderingContext",
   "WebGl2RenderingContext",
   "AudioContext",
@@ -56,7 +54,6 @@ gloo-events = "0.2"
 gloo-storage = "0.3"
 
 # Async runtime
-wasm-bindgen-futures = "0.4"
 futures = "0.3"
 
 # Serialization
@@ -72,10 +69,10 @@ log = "0.4"
 wasm-logger = "0.2"
 
 # UUID generation
-uuid = { version = "1.10", features = ["v4", "wasm-bindgen"] }
+uuid = { version = "1.10", features = ["v4", "js", "serde"] }
 
 # Time handling
-chrono = { version = "0.4", features = ["wasmbind"] }
+chrono = { version = "0.4", features = ["wasmbind", "serde"] }
 
 # Graphics and animations (optional WebGL support)
 wgpu = { version = "22.0", optional = true }
@@ -87,13 +84,5 @@ wasm-bindgen-test = "0.3"
 default = []
 webgl = ["wgpu"]
 
-[dependencies.web-sys]
-version = "0.3"
-
 [dev-dependencies]
-wasm-bindgen-test = "0.3"ge]
-name = "primo-poker-client"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
+wasm-bindgen-test = "0.3"

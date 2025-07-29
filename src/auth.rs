@@ -1,5 +1,6 @@
 // Authentication state management and services
-use crate::types::{User, PokerError};
+use yew::prelude::*;
+use crate::types::User;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AuthState {

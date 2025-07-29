@@ -1,5 +1,5 @@
 // WebSocket service - handles real-time communication with the PrimoPoker backend
-use yew::prelude::*;
+use yew::html::Scope;
 use gloo_net::websocket::{futures::WebSocket, Message};
 use gloo_timers::future::TimeoutFuture;
 use futures::{SinkExt, StreamExt};

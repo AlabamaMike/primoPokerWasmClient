@@ -1,1 +1,39 @@
-/target
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# WebAssembly
+/pkg/
+/dist/
+*.wasm
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Node modules (if using npm/yarn for frontend tools)
+node_modules/
+
+# Build artifacts
+/wasm-pack.log
+
+# Trunk build artifacts
+.trunk/
+
+# Temporary files
+*.tmp
+*.temp

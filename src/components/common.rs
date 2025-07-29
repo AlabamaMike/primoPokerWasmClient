@@ -169,12 +169,14 @@ pub fn button(props: &ButtonProps) -> Html {
     
     let class_str = classes.join(" ");
     
+    let button_type = props.button_type.as_deref().unwrap_or("button").to_string();
+    
     html! {
         <button
             class={class_str}
-            onclick={&props.onclick}
+            onclick={props.onclick.clone()}
             disabled={props.disabled}
-            type={props.button_type.as_deref().unwrap_or("button")}
+            type={button_type}
         >
             {for props.children.iter()}
         </button>

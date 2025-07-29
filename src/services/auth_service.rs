@@ -1,8 +1,7 @@
 // Authentication service - handles user login, registration, and token management
-use yew::prelude::*;
+use yew::html::Scope;
 use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
-use serde_json::json;
 
 use crate::types::{User, LoginCredentials, RegisterData, PokerError};
 use crate::app::AppMsg;
@@ -31,7 +30,7 @@ impl AuthService {
             let user: User = response
                 .json()
                 .await
-                .map_err(|e| PokerError::SerializationError(serde_json::Error::from(e)))?;
+                .map_err(|e| PokerError::NetworkError(e.to_string()))?;
             
             // Store authentication token
             if let Some(auth_header) = response.headers().get("authorization") {
@@ -62,7 +61,7 @@ impl AuthService {
             let user: User = response
                 .json()
                 .await
-                .map_err(|e| PokerError::SerializationError(serde_json::Error::from(e)))?;
+                .map_err(|e| PokerError::NetworkError(e.to_string()))?;
             
             // Store authentication token
             if let Some(auth_header) = response.headers().get("authorization") {
@@ -103,7 +102,7 @@ impl AuthService {
             let user: User = response
                 .json()
                 .await
-                .map_err(|e| PokerError::SerializationError(serde_json::Error::from(e)))?;
+                .map_err(|e| PokerError::NetworkError(e.to_string()))?;
             Ok(user)
         } else {
             Err(PokerError::AuthenticationError("Token verification failed".to_string()))
@@ -122,7 +121,7 @@ impl AuthService {
                 let data: serde_json::Value = response
                     .json()
                     .await
-                    .map_err(|e| PokerError::SerializationError(serde_json::Error::from(e)))?;
+                    .map_err(|e| PokerError::NetworkError(e.to_string()))?;
                 
                 if let Some(new_token) = data["token"].as_str() {
                     let _ = LocalStorage::set("primo_poker_token", new_token);
