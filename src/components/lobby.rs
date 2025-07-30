@@ -3,6 +3,7 @@ use yew_router::prelude::*;
 use gloo_storage::{LocalStorage, Storage};
 use web_sys::HtmlInputElement;
 use wasm_bindgen::JsCast;
+use chrono::Utc;
 
 use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute};
 
@@ -65,15 +66,77 @@ impl Component for LobbyPage {
         if let Ok(user) = LocalStorage::get::<User>("primo_poker_user") {
             link.send_message(LobbyMsg::UserDataLoaded(user));
         } else {
-            // Redirect to login if no user data found
-            let navigator = link.navigator().unwrap();
-            navigator.push(&AppRoute::Login);
+            // For testing: Create mock user data instead of redirecting to login
+            use uuid::Uuid;
+            
+            let mock_user = User {
+                id: Uuid::new_v4(),
+                username: "TestPlayer".to_string(),
+                email: "test@primopoker.com".to_string(),
+                display_name: "Test Player".to_string(),
+                avatar_url: None,
+                chips: 10000,
+                level: 5,
+                experience: 2500,
+                created_at: Utc::now(),
+                last_active: Utc::now(),
+            };
+            
+            // Store mock user data and load it
+            let _ = LocalStorage::set("primo_poker_user", &mock_user);
+            link.send_message(LobbyMsg::UserDataLoaded(mock_user));
         }
+
+        // Create mock room data for testing
+        let mock_rooms = vec![
+            GameRoom {
+                id: "room1".to_string(),
+                name: "High Stakes Hold'em".to_string(), 
+                game_type: GameType::TexasHoldem,
+                small_blind: 25,
+                big_blind: 50,
+                min_buy_in: 1000,
+                max_buy_in: 10000,
+                current_players: 2,
+                max_players: 9,
+                is_private: false,
+                is_active: true,
+                created_at: Utc::now(),
+            },
+            GameRoom {
+                id: "room2".to_string(),
+                name: "Beginner Texas Hold'em".to_string(),
+                game_type: GameType::TexasHoldem,
+                small_blind: 1,
+                big_blind: 2,
+                min_buy_in: 50,
+                max_buy_in: 200,
+                current_players: 1,
+                max_players: 6,
+                is_private: false,
+                is_active: true,
+                created_at: Utc::now(),
+            },
+            GameRoom {
+                id: "room3".to_string(),
+                name: "Omaha Hi-Lo".to_string(),
+                game_type: GameType::Omaha,
+                small_blind: 10,
+                big_blind: 20,
+                min_buy_in: 400,
+                max_buy_in: 2000,
+                current_players: 3,
+                max_players: 8,
+                is_private: false,
+                is_active: true,
+                created_at: Utc::now(),
+            },
+        ];
 
         Self {
             user: None,
-            available_rooms: Vec::new(),
-            filtered_rooms: Vec::new(),
+            available_rooms: mock_rooms.clone(),
+            filtered_rooms: mock_rooms, // Initialize with mock data
             loading: true,
             websocket_connected: false,
             filter_criteria: RoomFilter {

@@ -1,52 +1,12 @@
 [build]
-# The index HTML file to use for the app
 target = "index.html"
-
-# The directory where the built app will be output
-dist = "dist"
-
-# Enable file serving from the `assets` directory
-filehash = true
-
-# Public URL where the app will be served
+dist = "dist" 
 public_url = "/"
 
-# Build in release mode for production
-[build.release]
-minify = "on_release"
-
-# Development server configuration
 [serve]
-# Address and port for the development server
-address = "127.0.0.1"
+addresses = ["127.0.0.1"]
 port = 8080
-
-# Automatically open browser
 open = true
 
 # Enable file watching for hot reload
 watch = ["src", "styles", "index.html"]
-
-# Proxy configuration for API calls during development
-[[proxy]]
-backend = "http://localhost:3000"
-path = "/api"
-
-[[proxy]]
-backend = "ws://localhost:3001"
-path = "/ws"
-
-# Asset handling
-[[hooks]]
-stage = "pre_build"
-command = "echo"
-command_arguments = ["Building PrimoPoker WebAssembly Client..."]
-
-[[hooks]]
-stage = "post_build"
-command = "echo"
-command_arguments = ["Build completed successfully!"]
-
-# Optimize WASM output
-[tools]
-wasm-opt = ["-O4", "--enable-mutable-globals"]
