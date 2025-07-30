@@ -1,8 +1,23 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 use gloo_storage::{LocalStorage, Storage};
+use web_sys::HtmlInputElement;
+use wasm_bindgen::JsCast;
 
 use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute};
+
+#[derive(Clone, Default)]
+pub struct CreateRoomForm {
+    pub name: String,
+    pub game_type: GameType,
+    pub max_players: u8,
+    pub small_blind: i64,
+    pub big_blind: i64,
+    pub min_buy_in: i64,
+    pub max_buy_in: i64,
+    pub is_private: bool,
+    pub password: String,
+}
 
 pub struct LobbyPage {
     user: Option<User>,
@@ -13,6 +28,7 @@ pub struct LobbyPage {
     filter_criteria: RoomFilter,
     show_create_room_modal: bool,
     error_message: Option<String>,
+    create_room_form: CreateRoomForm,
 }
 
 pub enum LobbyMsg {
@@ -22,10 +38,18 @@ pub enum LobbyMsg {
     WebSocketConnected,
     WebSocketDisconnected,
     UpdateFilter(RoomFilter),
+    UpdateFilterGameType(GameType),
+    UpdateFilterStakes(Option<i64>, Option<i64>),
+    UpdateFilterPlayers(Option<u8>),
+    ToggleEmptyRooms,
+    ToggleFullRooms,
     JoinRoom(String),
     ShowCreateRoomModal,
     HideCreateRoomModal,
+    UpdateCreateRoomForm(String, String), // field_name, value
     CreateRoom,
+    RefreshRooms,
+    QuickJoin,
     Error(String),
     ClearError,
 }
@@ -62,6 +86,17 @@ impl Component for LobbyPage {
             },
             show_create_room_modal: false,
             error_message: None,
+            create_room_form: CreateRoomForm {
+                name: String::new(),
+                game_type: GameType::TexasHoldem,
+                max_players: 6,
+                small_blind: 10,
+                big_blind: 20,
+                min_buy_in: 1000,
+                max_buy_in: 10000,
+                is_private: false,
+                password: String::new(),
+            },
         }
     }
 
@@ -76,6 +111,9 @@ impl Component for LobbyPage {
             LobbyMsg::UserDataLoaded(user) => {
                 self.user = Some(user);
                 self.loading = false;
+                
+                // Load mock room data for development
+                self.load_mock_rooms();
                 
                 // Connect to lobby WebSocket for real-time updates
                 // self.websocket_service.connect_lobby(); // TODO: Implement
@@ -101,6 +139,32 @@ impl Component for LobbyPage {
                 self.apply_filters();
                 true
             }
+            LobbyMsg::UpdateFilterGameType(game_type) => {
+                self.filter_criteria.game_types = vec![game_type];
+                self.apply_filters();
+                true
+            }
+            LobbyMsg::UpdateFilterStakes(min_stakes, max_stakes) => {
+                self.filter_criteria.min_stakes = min_stakes;
+                self.filter_criteria.max_stakes = max_stakes;
+                self.apply_filters();
+                true
+            }
+            LobbyMsg::UpdateFilterPlayers(max_players) => {
+                self.filter_criteria.max_players_filter = max_players;
+                self.apply_filters();
+                true
+            }
+            LobbyMsg::ToggleEmptyRooms => {
+                self.filter_criteria.show_empty_rooms = !self.filter_criteria.show_empty_rooms;
+                self.apply_filters();
+                true
+            }
+            LobbyMsg::ToggleFullRooms => {
+                self.filter_criteria.show_full_rooms = !self.filter_criteria.show_full_rooms;
+                self.apply_filters();
+                true
+            }
             LobbyMsg::JoinRoom(room_id) => {
                 // Navigate to game room
                 let navigator = ctx.link().navigator().unwrap();
@@ -113,11 +177,124 @@ impl Component for LobbyPage {
             }
             LobbyMsg::HideCreateRoomModal => {
                 self.show_create_room_modal = false;
+                // Reset form when closing
+                self.create_room_form = CreateRoomForm::default();
+                self.create_room_form.game_type = GameType::TexasHoldem;
+                self.create_room_form.max_players = 6;
+                self.create_room_form.small_blind = 10;
+                self.create_room_form.big_blind = 20;
+                self.create_room_form.min_buy_in = 1000;
+                self.create_room_form.max_buy_in = 10000;
+                true
+            }
+            LobbyMsg::UpdateCreateRoomForm(field, value) => {
+                match field.as_str() {
+                    "name" => self.create_room_form.name = value,
+                    "game_type" => {
+                        self.create_room_form.game_type = match value.as_str() {
+                            "texas_holdem" => GameType::TexasHoldem,
+                            "omaha" => GameType::Omaha,
+                            "seven_card_stud" => GameType::SevenCardStud,
+                            _ => GameType::TexasHoldem,
+                        };
+                    }
+                    "max_players" => {
+                        if let Ok(players) = value.parse::<u8>() {
+                            self.create_room_form.max_players = players;
+                        }
+                    }
+                    "small_blind" => {
+                        if let Ok(blind) = value.parse::<i64>() {
+                            self.create_room_form.small_blind = blind;
+                        }
+                    }
+                    "big_blind" => {
+                        if let Ok(blind) = value.parse::<i64>() {
+                            self.create_room_form.big_blind = blind;
+                        }
+                    }
+                    "min_buy_in" => {
+                        if let Ok(buy_in) = value.parse::<i64>() {
+                            self.create_room_form.min_buy_in = buy_in;
+                        }
+                    }
+                    "max_buy_in" => {
+                        if let Ok(buy_in) = value.parse::<i64>() {
+                            self.create_room_form.max_buy_in = buy_in;
+                        }
+                    }
+                    "is_private" => {
+                        self.create_room_form.is_private = value == "true";
+                    }
+                    "password" => self.create_room_form.password = value,
+                    _ => {}
+                }
                 true
             }
             LobbyMsg::CreateRoom => {
-                // TODO: Implement room creation
+                // Validate form
+                if self.create_room_form.name.trim().is_empty() {
+                    self.error_message = Some("Room name is required".to_string());
+                    return true;
+                }
+                if self.create_room_form.small_blind >= self.create_room_form.big_blind {
+                    self.error_message = Some("Big blind must be larger than small blind".to_string());
+                    return true;
+                }
+                if self.create_room_form.min_buy_in >= self.create_room_form.max_buy_in {
+                    self.error_message = Some("Max buy-in must be larger than min buy-in".to_string());
+                    return true;
+                }
+
+                // Create new room (mock implementation)
+                let new_room = GameRoom {
+                    id: format!("room_{}", chrono::Utc::now().timestamp()),
+                    name: self.create_room_form.name.clone(),
+                    game_type: self.create_room_form.game_type.clone(),
+                    current_players: 0,
+                    max_players: self.create_room_form.max_players,
+                    small_blind: self.create_room_form.small_blind,
+                    big_blind: self.create_room_form.big_blind,
+                    min_buy_in: self.create_room_form.min_buy_in,
+                    max_buy_in: self.create_room_form.max_buy_in,
+                    is_private: self.create_room_form.is_private,
+                    is_active: true,
+                    created_at: chrono::Utc::now(),
+                };
+
+                // Add to available rooms
+                self.available_rooms.push(new_room.clone());
+                self.apply_filters();
+                
+                // Close modal and reset form
                 self.show_create_room_modal = false;
+                self.create_room_form = CreateRoomForm::default();
+                self.create_room_form.game_type = GameType::TexasHoldem;
+                self.create_room_form.max_players = 6;
+                self.create_room_form.small_blind = 10;
+                self.create_room_form.big_blind = 20;
+                self.create_room_form.min_buy_in = 1000;
+                self.create_room_form.max_buy_in = 10000;
+
+                // Navigate to the newly created room
+                let navigator = ctx.link().navigator().unwrap();
+                navigator.push(&AppRoute::Game { room_id: new_room.id });
+                
+                true
+            }
+            LobbyMsg::RefreshRooms => {
+                // Refresh room list (mock implementation)
+                self.load_mock_rooms();
+                true
+            }
+            LobbyMsg::QuickJoin => {
+                // Find first available room
+                if let Some(room) = self.filtered_rooms.iter().find(|r| r.current_players < r.max_players) {
+                    let navigator = ctx.link().navigator().unwrap();
+                    navigator.push(&AppRoute::Game { room_id: room.id.clone() });
+                } else {
+                    self.error_message = Some("No available rooms for quick join".to_string());
+                }
                 true
             }
             LobbyMsg::Error(error) => {
@@ -152,6 +329,29 @@ impl Component for LobbyPage {
         let on_show_create_modal = link.callback(|_| LobbyMsg::ShowCreateRoomModal);
         let on_hide_create_modal = link.callback(|_| LobbyMsg::HideCreateRoomModal);
         let on_clear_error = link.callback(|_| LobbyMsg::ClearError);
+        let on_refresh_rooms = link.callback(|_| LobbyMsg::RefreshRooms);
+        let on_quick_join = link.callback(|_| LobbyMsg::QuickJoin);
+        let on_create_room = link.callback(|_| LobbyMsg::CreateRoom);
+        
+        // Filter callbacks
+        let on_game_type_change = link.callback(|e: Event| {
+            let select: HtmlInputElement = e.target_unchecked_into();
+            let game_type = match select.value().as_str() {
+                "texas_holdem" => GameType::TexasHoldem,
+                "omaha" => GameType::Omaha,
+                "seven_card_stud" => GameType::SevenCardStud,
+                _ => GameType::TexasHoldem,
+            };
+            LobbyMsg::UpdateFilterGameType(game_type)
+        });
+        
+        let on_toggle_empty = link.callback(|_| LobbyMsg::ToggleEmptyRooms);
+        let on_toggle_full = link.callback(|_| LobbyMsg::ToggleFullRooms);
+        
+        // Create room form callbacks
+        let on_form_input = link.callback(|(field, value): (String, String)| {
+            LobbyMsg::UpdateCreateRoomForm(field, value)
+        });
 
         html! {
             <div class="lobby-container">
@@ -204,39 +404,61 @@ impl Component for LobbyPage {
                         <div class="filter-controls">
                             <div class="filter-group">
                                 <label>{"Game Type:"}</label>
-                                <select>
-                                    <option value="texas_holdem">{"Texas Hold'em"}</option>
-                                    <option value="omaha">{"Omaha"}</option>
-                                    <option value="seven_card_stud">{"Seven Card Stud"}</option>
+                                <select onchange={on_game_type_change}>
+                                    <option value="texas_holdem" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::TexasHoldem))}>
+                                        {"Texas Hold'em"}
+                                    </option>
+                                    <option value="omaha" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::Omaha))}>
+                                        {"Omaha"}
+                                    </option>
+                                    <option value="seven_card_stud" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::SevenCardStud))}>
+                                        {"Seven Card Stud"}
+                                    </option>
                                 </select>
                             </div>
                             
                             <div class="filter-group">
                                 <label>{"Stakes Range:"}</label>
                                 <div class="stakes-inputs">
-                                    <input type="number" placeholder="Min stakes" />
+                                    <input 
+                                        type="number" 
+                                        placeholder="Min stakes" 
+                                        value={self.filter_criteria.min_stakes.map(|v| v.to_string()).unwrap_or_default()}
+                                    />
                                     <span>{" - "}</span>
-                                    <input type="number" placeholder="Max stakes" />
+                                    <input 
+                                        type="number" 
+                                        placeholder="Max stakes"
+                                        value={self.filter_criteria.max_stakes.map(|v| v.to_string()).unwrap_or_default()}
+                                    />
                                 </div>
                             </div>
                             
                             <div class="filter-group">
                                 <label>{"Players:"}</label>
                                 <select>
-                                    <option value="">{"Any"}</option>
-                                    <option value="2">{"2 Players"}</option>
-                                    <option value="6">{"6 Players"}</option>
-                                    <option value="9">{"9 Players"}</option>
+                                    <option value="" selected={self.filter_criteria.max_players_filter.is_none()}>{"Any"}</option>
+                                    <option value="2" selected={self.filter_criteria.max_players_filter == Some(2)}>{"2 Players"}</option>
+                                    <option value="6" selected={self.filter_criteria.max_players_filter == Some(6)}>{"6 Players"}</option>
+                                    <option value="9" selected={self.filter_criteria.max_players_filter == Some(9)}>{"9 Players"}</option>
                                 </select>
                             </div>
                             
                             <div class="filter-toggles">
                                 <label class="toggle-label">
-                                    <input type="checkbox" checked={self.filter_criteria.show_empty_rooms} />
+                                    <input 
+                                        type="checkbox" 
+                                        checked={self.filter_criteria.show_empty_rooms}
+                                        onchange={on_toggle_empty}
+                                    />
                                     <span>{"Show empty rooms"}</span>
                                 </label>
                                 <label class="toggle-label">
-                                    <input type="checkbox" checked={self.filter_criteria.show_full_rooms} />
+                                    <input 
+                                        type="checkbox" 
+                                        checked={self.filter_criteria.show_full_rooms}
+                                        onchange={on_toggle_full}
+                                    />
                                     <span>{"Show full rooms"}</span>
                                 </label>
                             </div>
@@ -251,7 +473,7 @@ impl Component for LobbyPage {
                         >
                             {"🏠 Create Room"}
                         </button>
-                        <button class="quick-join-btn secondary">
+                        <button class="quick-join-btn secondary" onclick={on_quick_join}>
                             {"⚡ Quick Join"}
                         </button>
                     </div>
@@ -260,7 +482,7 @@ impl Component for LobbyPage {
                     <div class="rooms-section">
                         <div class="rooms-header">
                             <h3>{format!("Available Games ({})", self.filtered_rooms.len())}</h3>
-                            <button class="refresh-btn">{"🔄 Refresh"}</button>
+                            <button class="refresh-btn" onclick={on_refresh_rooms}>{"🔄 Refresh"}</button>
                         </div>
                         
                         if self.filtered_rooms.is_empty() {
@@ -352,53 +574,134 @@ impl Component for LobbyPage {
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label>{"Room Name"}</label>
-                                    <input type="text" placeholder="Enter room name" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter room name"
+                                        value={self.create_room_form.name.clone()}
+                                        onchange={
+                                            let on_form_input = on_form_input.clone();
+                                            Callback::from(move |e: Event| {
+                                                let input: HtmlInputElement = e.target_unchecked_into();
+                                                on_form_input.emit(("name".to_string(), input.value()))
+                                            })
+                                        }
+                                    />
                                 </div>
                                 <div class="form-group">
                                     <label>{"Game Type"}</label>
-                                    <select>
-                                        <option value="texas_holdem">{"Texas Hold'em"}</option>
-                                        <option value="omaha">{"Omaha"}</option>
+                                    <select 
+                                        onchange={
+                                            let on_form_input = on_form_input.clone();
+                                            Callback::from(move |e: Event| {
+                                                let select: HtmlInputElement = e.target_unchecked_into();
+                                                on_form_input.emit(("game_type".to_string(), select.value()))
+                                            })
+                                        }
+                                    >
+                                        <option value="texas_holdem" selected={matches!(self.create_room_form.game_type, GameType::TexasHoldem)}>
+                                            {"Texas Hold'em"}
+                                        </option>
+                                        <option value="omaha" selected={matches!(self.create_room_form.game_type, GameType::Omaha)}>
+                                            {"Omaha"}
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>{"Max Players"}</label>
-                                    <select>
-                                        <option value="2">{"2 Players"}</option>
-                                        <option value="6">{"6 Players"}</option>
-                                        <option value="9">{"9 Players"}</option>
+                                    <select 
+                                        onchange={
+                                            let on_form_input = on_form_input.clone();
+                                            Callback::from(move |e: Event| {
+                                                let select: HtmlInputElement = e.target_unchecked_into();
+                                                on_form_input.emit(("max_players".to_string(), select.value()))
+                                            })
+                                        }
+                                    >
+                                        <option value="2" selected={self.create_room_form.max_players == 2}>{"2 Players"}</option>
+                                        <option value="6" selected={self.create_room_form.max_players == 6}>{"6 Players"}</option>
+                                        <option value="9" selected={self.create_room_form.max_players == 9}>{"9 Players"}</option>
                                     </select>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label>{"Small Blind"}</label>
-                                        <input type="number" value="10" />
+                                        <input 
+                                            type="number" 
+                                            value={self.create_room_form.small_blind.to_string()}
+                                            onchange={
+                                                let on_form_input = on_form_input.clone();
+                                                Callback::from(move |e: Event| {
+                                                    let input: HtmlInputElement = e.target_unchecked_into();
+                                                    on_form_input.emit(("small_blind".to_string(), input.value()))
+                                                })
+                                            }
+                                        />
                                     </div>
                                     <div class="form-group">
                                         <label>{"Big Blind"}</label>
-                                        <input type="number" value="20" />
+                                        <input 
+                                            type="number" 
+                                            value={self.create_room_form.big_blind.to_string()}
+                                            onchange={
+                                                let on_form_input = on_form_input.clone();
+                                                Callback::from(move |e: Event| {
+                                                    let input: HtmlInputElement = e.target_unchecked_into();
+                                                    on_form_input.emit(("big_blind".to_string(), input.value()))
+                                                })
+                                            }
+                                        />
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label>{"Min Buy-in"}</label>
-                                        <input type="number" value="1000" />
+                                        <input 
+                                            type="number" 
+                                            value={self.create_room_form.min_buy_in.to_string()}
+                                            onchange={
+                                                let on_form_input = on_form_input.clone();
+                                                Callback::from(move |e: Event| {
+                                                    let input: HtmlInputElement = e.target_unchecked_into();
+                                                    on_form_input.emit(("min_buy_in".to_string(), input.value()))
+                                                })
+                                            }
+                                        />
                                     </div>
                                     <div class="form-group">
                                         <label>{"Max Buy-in"}</label>
-                                        <input type="number" value="10000" />
+                                        <input 
+                                            type="number" 
+                                            value={self.create_room_form.max_buy_in.to_string()}
+                                            onchange={
+                                                let on_form_input = on_form_input.clone();
+                                                Callback::from(move |e: Event| {
+                                                    let input: HtmlInputElement = e.target_unchecked_into();
+                                                    on_form_input.emit(("max_buy_in".to_string(), input.value()))
+                                                })
+                                            }
+                                        />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="checkbox-label">
-                                        <input type="checkbox" />
+                                        <input 
+                                            type="checkbox" 
+                                            checked={self.create_room_form.is_private}
+                                            onchange={
+                                                let on_form_input = on_form_input.clone();
+                                                Callback::from(move |e: Event| {
+                                                    let input: HtmlInputElement = e.target_unchecked_into();
+                                                    on_form_input.emit(("is_private".to_string(), input.checked().to_string()))
+                                                })
+                                            }
+                                        />
                                         <span>{"Private Room (requires password)"}</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button class="cancel-btn" onclick={on_hide_create_modal}>{"Cancel"}</button>
-                                <button class="create-btn primary">{"Create Room"}</button>
+                                <button class="create-btn primary" onclick={on_create_room}>{"Create Room"}</button>
                             </div>
                         </div>
                     </div>

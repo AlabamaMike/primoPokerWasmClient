@@ -109,7 +109,13 @@ pub enum GameType {
     TexasHoldem,
     Omaha,
     OmahaHiLo,
-    SevenCard,
+    SevenCardStud,
+}
+
+impl Default for GameType {
+    fn default() -> Self {
+        GameType::TexasHoldem
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
