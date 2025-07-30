@@ -1,0 +1,416 @@
+/* Phase 3.5: Visual Enhancement & Branding CSS */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Enhanced CSS Variables - Poker Theme */
+:root {
+  /* Poker Brand Colors */
+  --poker-green-dark: #0f5132;
+  --poker-green: #198754;
+  --poker-green-light: #20c967;
+  
+  --accent-gold: #ffc107;
+  --accent-gold-dark: #e6ac00;
+  --accent-gold-light: #ffcd39;
+  
+  --poker-red: #dc3545;
+  --poker-red-dark: #b02a37;
+  --poker-blue: #0d6efd;
+  --poker-blue-dark: #0b5ed7;
+  
+  /* Background Palette */
+  --felt-dark: #1a2e1a;
+  --felt-medium: #2d5a2d;
+  --felt-light: #4d7c4d;
+  --wood-brown: #8b4513;
+  --metallic-silver: #c0c0c0;
+  --metallic-gold: #ffd700;
+  
+  /* Enhanced Typography */
+  --font-primary: 'Playfair Display', serif;
+  --font-secondary: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Enhanced Shadows */
+  --shadow-elegant: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-premium: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 20px rgba(255, 193, 7, 0.3);
+  
+  /* Poker-specific gradients */
+  --gradient-felt: linear-gradient(135deg, var(--felt-dark) 0%, var(--felt-medium) 50%, var(--felt-dark) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold-dark) 100%);
+  --gradient-premium: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* Enhanced Body Styling */
+body {
+  font-family: var(--font-secondary);
+  background: var(--gradient-felt);
+  background-attachment: fixed;
+  color: #f1f5f9;
+  position: relative;
+}
+
+/* Subtle background texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Enhanced App Container */
+.app {
+  background: var(--gradient-felt);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Premium Header Styling */
+.app-header {
+  background: rgba(15, 81, 50, 0.95);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid var(--accent-gold);
+  box-shadow: var(--shadow-elegant);
+}
+
+.navbar {
+  padding: 1rem 2rem;
+}
+
+/* Logo Integration */
+.brand-logo img {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.brand-logo img:hover {
+  transform: scale(1.05);
+}
+
+/* Enhanced Navigation Links */
+.nav-link {
+  font-family: var(--font-secondary);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-gold);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Premium Button Enhancements */
+.btn {
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: var(--gradient-gold);
+  border-color: var(--accent-gold-dark);
+  color: var(--felt-dark);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 4px 15px rgba(255, 193, 7, 0.4),
+    var(--shadow-inset);
+}
+
+.btn-primary:hover:not(.btn-disabled) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(255, 193, 7, 0.5),
+    var(--shadow-glow);
+}
+
+/* Enhanced Card Components */
+.card {
+  background: var(--gradient-premium);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 16px;
+  box-shadow: var(--shadow-elegant);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-gold);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card-clickable:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-premium);
+}
+
+/* Enhanced Modal */
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background: var(--gradient-premium);
+  border: 2px solid var(--accent-gold);
+  border-radius: 20px;
+  box-shadow: var(--shadow-premium);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--gradient-gold);
+}
+
+/* Enhanced Form Inputs */
+.form-input {
+  font-family: var(--font-secondary);
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 
+    0 0 0 4px rgba(255, 193, 7, 0.2),
+    var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+/* Enhanced Loading Spinner */
+.loading-spinner {
+  position: relative;
+}
+
+.loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Chip Stack Animation */
+.chip-animation {
+  animation: chipFloat 3s ease-in-out infinite;
+}
+
+@keyframes chipFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+/* Premium Typography */
+h1, h2, h3 {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Numeric displays (chips, etc.) */
+.numeric-display {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent-gold);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Poker-specific UI elements */
+.poker-table {
+  background: var(--gradient-felt);
+  border: 8px solid var(--wood-brown);
+  border-radius: 50%;
+  box-shadow: 
+    var(--shadow-elegant),
+    inset 0 0 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.poker-table::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 50%;
+  border-style: dashed;
+}
+
+/* Enhanced Toast Notifications */
+.toast {
+  background: var(--gradient-premium);
+  border-left: 4px solid var(--accent-gold);
+  border-radius: 12px;
+  box-shadow: var(--shadow-elegant);
+  backdrop-filter: blur(10px);
+}
+
+.toast-success {
+  border-left-color: var(--poker-green);
+}
+
+.toast-error {
+  border-left-color: var(--poker-red);
+}
+
+.toast-info {
+  border-left-color: var(--poker-blue);
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .brand-logo img {
+    height: 32px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .nav-link {
+    font-size: 0.8rem;
+  }
+}
+
+/* High contrast mode enhancements */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 3px;
+    border-color: var(--accent-gold);
+  }
+  
+  .btn {
+    border-width: 3px;
+  }
+  
+  .form-input {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .chip-animation {
+    animation: none;
+  }
+  
+  .btn::before {
+    transition: none;
+  }
+  
+  .nav-link::after {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .app-header,
+  .app-footer {
+    display: none !important;
+  }
+}

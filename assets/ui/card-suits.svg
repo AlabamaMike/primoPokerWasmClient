@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hearts -->
+  <g id="heart" transform="translate(0,0)">
+    <path d="M15,25 C15,25 5,17 5,12 C5,8 8,5 12,5 C14,5 15,6 15,6 C15,6 16,5 18,5 C22,5 25,8 25,12 C25,17 15,25 15,25 Z" 
+          fill="#dc3545" stroke="none"/>
+  </g>
+  
+  <!-- Diamonds -->
+  <g id="diamond" transform="translate(30,0)">
+    <path d="M15,5 L25,15 L15,25 L5,15 Z" 
+          fill="#dc3545" stroke="none"/>
+  </g>
+  
+  <!-- Clubs -->
+  <g id="club" transform="translate(60,0)">
+    <circle cx="12" cy="10" r="4" fill="#000000"/>
+    <circle cx="18" cy="10" r="4" fill="#000000"/>
+    <circle cx="15" cy="15" r="4" fill="#000000"/>
+    <path d="M15,17 L15,25 M12,25 L18,25" stroke="#000000" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Spades -->
+  <g id="spade" transform="translate(90,0)">
+    <path d="M15,5 C15,5 5,12 5,17 C5,20 8,23 12,23 C14,23 15,22 15,22 C15,22 16,23 18,23 C22,23 25,20 25,17 C25,12 15,5 15,5 Z" 
+          fill="#000000" stroke="none"/>
+    <path d="M15,20 L15,25 M12,25 L18,25" stroke="#000000" stroke-width="2" fill="none"/>
+  </g>
+</svg>

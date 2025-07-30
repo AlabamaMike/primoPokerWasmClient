@@ -34,8 +34,9 @@ pub fn header(props: &HeaderProps) -> Html {
             <nav class="navbar">
                 <div class="nav-brand">
                     <Link<AppRoute> to={AppRoute::Home} classes="brand-link">
-                        <img src="/assets/logo.png" alt="PrimoPoker" class="logo" />
-                        <span class="brand-text">{"PrimoPoker"}</span>
+                        <div class="brand-logo">
+                            <img src="/assets/logos/primo-poker-logo.svg" alt="Primo Poker" class="logo" />
+                        </div>
                     </Link<AppRoute>>
                 </div>
                 
