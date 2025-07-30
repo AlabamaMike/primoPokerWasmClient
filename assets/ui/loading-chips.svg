@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chip1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffc107;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e6ac00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chip2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc3545;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c02d3a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chip3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d6efd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0b5cd5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rotating poker chips -->
+  <g transform-origin="60 60">
+    <animateTransform 
+      attributeName="transform" 
+      type="rotate" 
+      values="0 60 60;360 60 60" 
+      dur="2s" 
+      repeatCount="indefinite"/>
+    
+    <!-- Chip 1 (Gold) -->
+    <g transform="translate(60,20)">
+      <circle r="12" fill="url(#chip1)" stroke="#8b4513" stroke-width="1"/>
+      <circle r="8" fill="none" stroke="#8b4513" stroke-width="0.5" opacity="0.6"/>
+      <text y="2" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#8b4513" text-anchor="middle">25</text>
+    </g>
+    
+    <!-- Chip 2 (Red) -->
+    <g transform="translate(95,75)">
+      <circle r="12" fill="url(#chip2)" stroke="#8b4513" stroke-width="1"/>
+      <circle r="8" fill="none" stroke="#8b4513" stroke-width="0.5" opacity="0.6"/>
+      <text y="2" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#8b4513" text-anchor="middle">5</text>
+    </g>
+    
+    <!-- Chip 3 (Blue) -->
+    <g transform="translate(25,75)">
+      <circle r="12" fill="url(#chip3)" stroke="#8b4513" stroke-width="1"/>
+      <circle r="8" fill="none" stroke="#8b4513" stroke-width="0.5" opacity="0.6"/>
+      <text y="2" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#8b4513" text-anchor="middle">10</text>
+    </g>
+  </g>
+  
+  <!-- Center loading text -->
+  <text x="60" y="65" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#0f5132" text-anchor="middle">
+    Loading...
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+  </text>
+</svg>

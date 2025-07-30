@@ -11,25 +11,27 @@ pub fn home_page() -> Html {
     html! {
         <div class="home-page">
             <div class="hero-section">
-                <h1 class="hero-title">{"Welcome to Primo Poker"}</h1>
-                <p class="hero-subtitle">{"Your premium WebAssembly poker experience"}</p>
-                
-                <div class="hero-actions">
-                    if is_authenticated {
-                        <Link<AppRoute> to={AppRoute::Lobby} classes="btn btn-primary btn-large">
-                            {"Enter Lobby"}
-                        </Link<AppRoute>>
-                        <Link<AppRoute> to={AppRoute::Profile} classes="btn btn-secondary">
-                            {"View Profile"}
-                        </Link<AppRoute>>
-                    } else {
-                        <Link<AppRoute> to={AppRoute::Login} classes="btn btn-primary btn-large">
-                            {"Sign In"}
-                        </Link<AppRoute>>
-                        <Link<AppRoute> to={AppRoute::Register} classes="btn btn-secondary">
-                            {"Create Account"}
-                        </Link<AppRoute>>
-                    }
+                <div class="hero-content">
+                    <h1 class="hero-title">{"Welcome to Primo Poker"}</h1>
+                    <p class="hero-subtitle">{"Your premium WebAssembly poker experience"}</p>
+                    
+                    <div class="hero-actions">
+                        if is_authenticated {
+                            <Link<AppRoute> to={AppRoute::Lobby} classes="btn btn-primary btn-large">
+                                {"Enter Lobby"}
+                            </Link<AppRoute>>
+                            <Link<AppRoute> to={AppRoute::Profile} classes="btn btn-secondary">
+                                {"View Profile"}
+                            </Link<AppRoute>>
+                        } else {
+                            <Link<AppRoute> to={AppRoute::Login} classes="btn btn-primary btn-large">
+                                {"Sign In"}
+                            </Link<AppRoute>>
+                            <Link<AppRoute> to={AppRoute::Register} classes="btn btn-secondary">
+                                {"Create Account"}
+                            </Link<AppRoute>>
+                        }
+                    </div>
                 </div>
             </div>
             

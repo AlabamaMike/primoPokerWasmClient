@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Felt texture pattern -->
+    <pattern id="feltTexture" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#0f5132"/>
+      <circle cx="2" cy="2" r="0.5" fill="#1a5a3a" opacity="0.3"/>
+      <circle cx="6" cy="6" r="0.5" fill="#0a3d28" opacity="0.4"/>
+      <circle cx="4" cy="1" r="0.3" fill="#1a5a3a" opacity="0.2"/>
+      <circle cx="1" cy="7" r="0.3" fill="#0a3d28" opacity="0.3"/>
+    </pattern>
+    
+    <!-- Subtle noise for realism -->
+    <filter id="noise">
+      <feTurbulence baseFrequency="0.9" numOctaves="1" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="discrete" tableValues="0.02 0.04 0.02 0"/>
+      </feComponentTransfer>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  
+  <!-- Base felt color -->
+  <rect width="400" height="400" fill="url(#feltTexture)"/>
+  
+  <!-- Add subtle noise overlay -->
+  <rect width="400" height="400" fill="#0f5132" filter="url(#noise)" opacity="0.3"/>
+</svg>

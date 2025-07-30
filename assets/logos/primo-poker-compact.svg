@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="compactGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffc107;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e6ac00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Compact poker chip icon -->
+  <circle cx="20" cy="20" r="16" fill="#0f5132" stroke="url(#compactGradient)" stroke-width="2"/>
+  <circle cx="20" cy="20" r="12" fill="none" stroke="url(#compactGradient)" stroke-width="1" opacity="0.7"/>
+  <circle cx="20" cy="20" r="8" fill="none" stroke="url(#compactGradient)" stroke-width="1" opacity="0.5"/>
+  <text x="20" y="25" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="url(#compactGradient)" text-anchor="middle">P</text>
+  
+  <!-- Compact text -->
+  <text x="45" y="28" font-family="Playfair Display, serif" font-size="18" font-weight="700" fill="url(#compactGradient)">
+    PRIMO POKER
+  </text>
+</svg>

@@ -140,11 +140,8 @@ pub fn loading_spinner(props: &LoadingSpinnerProps) -> Html {
     
     html! {
         <div class={class}>
-            <div class="spinner">
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-            </div>
+            // Use the new poker chip loading animation
+            <div class="loading-spinner-graphic"></div>
             
             if let Some(ref message) = props.message {
                 <p class="loading-message">{message}</p>

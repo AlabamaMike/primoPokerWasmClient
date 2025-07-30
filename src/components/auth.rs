@@ -158,8 +158,8 @@ impl Component for LoginPage {
         let on_clear_error = link.callback(|_| LoginMsg::ClearError);
 
         html! {
-            <div class="auth-container">
-                <div class="auth-card">
+            <div class="auth-page">
+                <div class="auth-container">
                     <div class="auth-header">
                         <h1 class="auth-title">{"Sign In"}</h1>
                         <p class="auth-subtitle">{"Welcome back to Primo Poker"}</p>
@@ -453,8 +453,8 @@ impl Component for RegisterPage {
         let on_confirm_password_toggle = link.callback(|_| RegisterMsg::ToggleConfirmPasswordVisibility);
 
         html! {
-            <div class="auth-container">
-                <div class="auth-card">
+            <div class="auth-page">
+                <div class="auth-container">
                     <div class="auth-header">
                         <h1 class="auth-title">{"Create Account"}</h1>
                         <p class="auth-subtitle">{"Join Primo Poker today"}</p>

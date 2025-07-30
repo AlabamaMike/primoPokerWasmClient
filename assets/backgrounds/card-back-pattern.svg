@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="280" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Card back gradient -->
+    <radialGradient id="cardBackGradient" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#1a365d;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#2c5282;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a365d;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Ornate pattern -->
+    <pattern id="ornatePattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#2c5282"/>
+      <circle cx="20" cy="20" r="8" fill="none" stroke="#ffc107" stroke-width="1" opacity="0.6"/>
+      <circle cx="20" cy="20" r="4" fill="none" stroke="#ffc107" stroke-width="0.5" opacity="0.8"/>
+      <path d="M20,12 L24,20 L20,28 L16,20 Z" fill="#ffc107" opacity="0.4"/>
+    </pattern>
+    
+    <!-- Border ornament -->
+    <pattern id="borderPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="#1a365d"/>
+      <circle cx="10" cy="10" r="2" fill="#ffc107" opacity="0.7"/>
+    </pattern>
+  </defs>
+  
+  <!-- Card background -->
+  <rect width="200" height="280" rx="15" ry="15" fill="url(#cardBackGradient)"/>
+  
+  <!-- Ornate pattern overlay -->
+  <rect x="15" y="15" width="170" height="250" rx="10" ry="10" fill="url(#ornatePattern)" opacity="0.8"/>
+  
+  <!-- Border decoration -->
+  <rect x="0" y="0" width="200" height="280" rx="15" ry="15" fill="none" stroke="url(#borderPattern)" stroke-width="8"/>
+  
+  <!-- Central logo area -->
+  <ellipse cx="100" cy="140" rx="60" ry="80" fill="rgba(26, 54, 93, 0.8)"/>
+  <ellipse cx="100" cy="140" rx="55" ry="75" fill="none" stroke="#ffc107" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Central ornament -->
+  <text x="100" y="130" font-family="Playfair Display, serif" font-size="24" font-weight="700" fill="#ffc107" text-anchor="middle">P</text>
+  <text x="100" y="155" font-family="Playfair Display, serif" font-size="14" font-weight="400" fill="#ffc107" text-anchor="middle" opacity="0.8">PRIMO</text>
+  
+  <!-- Corner decorations -->
+  <g transform="translate(25,25)">
+    <path d="M0,0 L15,0 Q20,0 20,5 L20,15 Q15,20 10,15 Q5,10 0,15 Z" fill="#ffc107" opacity="0.6"/>
+  </g>
+  <g transform="translate(175,25) rotate(90)">
+    <path d="M0,0 L15,0 Q20,0 20,5 L20,15 Q15,20 10,15 Q5,10 0,15 Z" fill="#ffc107" opacity="0.6"/>
+  </g>
+  <g transform="translate(175,255) rotate(180)">
+    <path d="M0,0 L15,0 Q20,0 20,5 L20,15 Q15,20 10,15 Q5,10 0,15 Z" fill="#ffc107" opacity="0.6"/>
+  </g>
+  <g transform="translate(25,255) rotate(270)">
+    <path d="M0,0 L15,0 Q20,0 20,5 L20,15 Q15,20 10,15 Q5,10 0,15 Z" fill="#ffc107" opacity="0.6"/>
+  </g>
+</svg>
