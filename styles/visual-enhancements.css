@@ -44,17 +44,18 @@
   --gradient-premium: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
 }
 
-/* Enhanced Body Styling */
-body {
-  font-family: var(--font-secondary);
-  background: var(--gradient-felt);
-  background-attachment: fixed;
-  color: #f1f5f9;
+/* Enhanced Body Styling - Force override with higher specificity */
+html body {
+  font-family: var(--font-secondary) !important;
+  background: var(--gradient-felt) !important;
+  background-color: #0f5132 !important; /* Fallback solid green background */
+  background-attachment: fixed !important;
+  color: #f1f5f9 !important;
   position: relative;
 }
 
 /* Subtle background texture overlay */
-body::before {
+html body::before {
   content: '';
   position: fixed;
   top: 0;
@@ -68,14 +69,14 @@ body::before {
   z-index: -1;
 }
 
-/* Enhanced App Container */
-.app {
+/* Enhanced App Container - Force override */
+html .app {
   background: 
     var(--gradient-felt),
-    url('../assets/backgrounds/poker-table-felt.svg');
-  background-size: cover, 400px 400px;
-  background-attachment: fixed, fixed;
-  min-height: 100vh;
+    url('../assets/backgrounds/poker-table-felt.svg') !important;
+  background-size: cover, 400px 400px !important;
+  background-attachment: fixed, fixed !important;
+  min-height: 100vh !important;
   position: relative;
 }
 
@@ -94,28 +95,31 @@ body::before {
   position: relative;
 }
 
-/* Premium Header Styling */
-.app-header {
-  background: rgba(15, 81, 50, 0.95);
-  backdrop-filter: blur(15px);
-  border-bottom: 2px solid var(--accent-gold);
-  box-shadow: var(--shadow-elegant);
+/* Premium Header Styling - Force override */
+html .app .app-header {
+  background: rgba(15, 81, 50, 0.95) !important;
+  backdrop-filter: blur(15px) !important;
+  border-bottom: 2px solid var(--accent-gold) !important;
+  box-shadow: var(--shadow-elegant) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1020 !important;
 }
 
-.navbar {
-  padding: 1rem 2rem;
+html .app .navbar {
+  padding: 1rem 2rem !important;
 }
 
 /* Logo Integration */
-.brand-logo img {
-  height: 40px;
-  width: auto;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  transition: transform 0.3s ease;
+html .brand-logo img {
+  height: 40px !important;
+  width: auto !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+  transition: transform 0.3s ease !important;
 }
 
-.brand-logo img:hover {
-  transform: scale(1.05);
+html .brand-logo img:hover {
+  transform: scale(1.05) !important;
 }
 
 /* Enhanced Navigation Links */

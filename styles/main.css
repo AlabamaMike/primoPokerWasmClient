@@ -4,6 +4,7 @@
 @import url('./auth.css');
 @import url('./home.css');
 @import url('./components.css');
+/* Import visual enhancements last to ensure they override base styles */
 @import url('./visual-enhancements.css');
 
 /* CSS Reset and Base Styles */
@@ -124,7 +125,7 @@ body {
     font-weight: var(--font-weight-normal);
     line-height: 1.6;
     color: var(--dark-text);
-    background-color: var(--dark-bg);
+    /* Removed background-color to allow visual-enhancements.css to take control */
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -134,7 +135,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-surface) 100%);
+    /* Removed background gradient to allow visual-enhancements.css to take control */
 }
 
 .main-content {
@@ -143,7 +144,8 @@ body {
     flex-direction: column;
 }
 
-/* Header Styles */
+/* Header Styles - Commented out to allow visual-enhancements.css to take control */
+/*
 .app-header {
     background: rgba(30, 41, 59, 0.95);
     backdrop-filter: blur(10px);
@@ -152,6 +154,7 @@ body {
     top: 0;
     z-index: var(--z-sticky);
 }
+*/
 
 .navbar {
     display: flex;

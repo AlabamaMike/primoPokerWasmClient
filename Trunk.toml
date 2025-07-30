@@ -9,4 +9,9 @@ port = 8080
 open = true
 
 # Enable file watching for hot reload
-watch = ["src", "styles", "index.html"]
+watch = ["src", "styles", "index.html", "assets"]
+
+# Copy assets directory to dist
+[[assets]]
+src = "assets"
+dest = "assets"

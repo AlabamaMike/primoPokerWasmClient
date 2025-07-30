@@ -23,6 +23,47 @@
     <link rel="stylesheet" href="/styles/components.css">
     <link rel="stylesheet" href="/styles/game.css">
     <link rel="stylesheet" href="/styles/animations.css">
+    <!-- Phase 3.5 Visual Enhancements - Load last to override other styles -->
+    <link rel="stylesheet" href="/styles/visual-enhancements.css">
+    
+    <!-- EMERGENCY CSS TEST: Direct inline styles to force visual changes -->
+    <style>
+        /* Force poker theme with inline CSS */
+        body {
+            background: linear-gradient(135deg, #1a2e1a 0%, #2d5a2d 50%, #1a2e1a 100%) !important;
+            background-color: #0f5132 !important;
+            color: #f1f5f9 !important;
+            font-family: 'Inter', sans-serif !important;
+            min-height: 100vh !important;
+        }
+        
+        .app {
+            background: linear-gradient(135deg, #1a2e1a 0%, #2d5a2d 50%, #1a2e1a 100%) !important;
+            min-height: 100vh !important;
+        }
+        
+        .app-header {
+            background: rgba(15, 81, 50, 0.95) !important;
+            border-bottom: 2px solid #ffc107 !important;
+            color: #f1f5f9 !important;
+        }
+        
+        .hero-title {
+            color: #ffc107 !important;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 3.5rem !important;
+            font-weight: 700 !important;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+        }
+        
+        .hero-subtitle {
+            color: #f1f5f9 !important;
+            font-size: 1.25rem !important;
+        }
+        
+        /* Force import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    </style>
     
     <!-- Meta tags for SEO and social sharing -->
     <meta name="description" content="Experience high-performance real-time poker gaming with PrimoPoker. Advanced graphics, smooth animations, and seamless multiplayer gameplay.">
