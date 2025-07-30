@@ -35,7 +35,15 @@ pub fn header(props: &HeaderProps) -> Html {
                 <div class="nav-brand">
                     <Link<AppRoute> to={AppRoute::Home} classes="brand-link">
                         <div class="brand-logo">
-                            <img src="/assets/logos/primo-poker-logo.svg" alt="Primo Poker" class="logo" />
+                            // SVG Logo attempt
+                            <img 
+                                src="./assets/logos/primo-poker-logo.svg" 
+                                alt="" 
+                                class="logo logo-svg"
+                                style="display: none;"
+                            />
+                            // Text fallback - always visible for now
+                            <span class="logo-text">{"🎰 Primo Poker"}</span>
                         </div>
                     </Link<AppRoute>>
                 </div>

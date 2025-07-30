@@ -26,26 +26,478 @@
     <!-- Phase 3.5 Visual Enhancements - Load last to override other styles -->
     <link rel="stylesheet" href="/styles/visual-enhancements.css">
     
-    <!-- EMERGENCY CSS TEST: Direct inline styles to force visual changes -->
+    <!-- Professional Poker Theme Styles -->
     <style>
-        /* Force poker theme with inline CSS */
+        /* Premium Professional Poker Theme */
         body {
-            background: linear-gradient(135deg, #1a2e1a 0%, #2d5a2d 50%, #1a2e1a 100%) !important;
-            background-color: #0f5132 !important;
-            color: #f1f5f9 !important;
-            font-family: 'Inter', sans-serif !important;
+            background: 
+                radial-gradient(ellipse at top, rgba(21, 128, 61, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f5132 75%, #134e4a 100%) !important;
+            background-attachment: fixed !important;
+            color: #f8fafc !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
             min-height: 100vh !important;
+            position: relative;
+        }
+        
+        /* Elegant texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+            pointer-events: none;
+            z-index: 0;
         }
         
         .app {
-            background: linear-gradient(135deg, #1a2e1a 0%, #2d5a2d 50%, #1a2e1a 100%) !important;
+            background: transparent !important;
             min-height: 100vh !important;
+            position: relative;
+            z-index: 1;
         }
         
+        /* Professional Header Styling */
         .app-header {
-            background: rgba(15, 81, 50, 0.95) !important;
-            border-bottom: 2px solid #ffc107 !important;
-            color: #f1f5f9 !important;
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.95) 0%, 
+                rgba(30, 41, 59, 0.9) 50%, 
+                rgba(15, 23, 42, 0.95) 100%) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.3) !important;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 0 rgba(251, 191, 36, 0.1) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.2) inset !important;
+            color: #f8fafc !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1020 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .navbar {
+            padding: 1.25rem 2rem !important;
+            max-width: 1400px !important;
+            margin: 0 auto !important;
+            width: 100% !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        
+        /* Enhanced Brand Section with Logo Fallback */
+        .nav-brand {
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        .brand-logo {
+            display: flex !important;
+            align-items: center !important;
+            position: relative !important;
+        }
+        
+        .brand-link {
+            display: flex !important;
+            align-items: center !important;
+            text-decoration: none !important;
+            color: #f8fafc !important;
+            font-weight: 700 !important;
+            font-size: 1.5rem !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            position: relative !important;
+        }
+        
+        .brand-link:hover {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 12px rgba(251, 191, 36, 0.4) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Logo text fallback styling - Professional Text Logo */
+        .logo-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            font-weight: 700 !important;
+            font-size: 1.75rem !important;
+            letter-spacing: -0.5px !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.3)) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .brand-link:hover .logo-text {
+            filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.5)) !important;
+            transform: scale(1.02) !important;
+        }
+        
+        /* Hide SVG logo for now until we fix the path issue */
+        .logo-svg {
+            display: none !important;
+        }
+        
+        /* Logo Styling with Fallback */
+        .logo {
+            height: 40px !important;
+            width: auto !important;
+            margin-right: 0.75rem !important;
+            filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.3)) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            max-width: 160px !important;
+        }
+        
+        .logo:hover {
+            filter: drop-shadow(0 4px 12px rgba(251, 191, 36, 0.5)) !important;
+            transform: scale(1.05) !important;
+        }
+        
+        /* Logo fallback - if image fails to load, show text */
+        .brand-logo::after {
+            content: 'Primo Poker' !important;
+            display: none !important;
+            color: #fbbf24 !important;
+            font-weight: 700 !important;
+            font-size: 1.5rem !important;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        
+        /* Show fallback text if image doesn't load */
+        .logo[src=""], .logo:not([src]), .logo[alt]:empty {
+            display: none !important;
+        }
+        
+        .logo[src=""]:after, .logo:not([src]):after, .logo[alt]:empty:after {
+            content: 'Primo Poker' !important;
+            display: inline-block !important;
+            color: #fbbf24 !important;
+            font-weight: 700 !important;
+            font-size: 1.5rem !important;
+        }
+        
+        /* Navigation Links */
+        .nav-links {
+            display: flex !important;
+            align-items: center !important;
+            gap: 2rem !important;
+        }
+        
+        .nav-link {
+            color: #cbd5e1 !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            font-size: 0.95rem !important;
+            padding: 0.75rem 1.25rem !important;
+            border-radius: 8px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            position: relative !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border: 1px solid transparent !important;
+        }
+        
+        .nav-link:hover {
+            color: #fbbf24 !important;
+            background: rgba(251, 191, 36, 0.1) !important;
+            border-color: rgba(251, 191, 36, 0.2) !important;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.3) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* User Info Styling */
+        .user-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            background: rgba(15, 23, 42, 0.8) !important;
+            backdrop-filter: blur(10px) !important;
+            padding: 0.75rem 1.25rem !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(251, 191, 36, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .username {
+            color: #f8fafc !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border: 1px solid rgba(239, 68, 68, 0.3) !important;
+            color: #fca5a5 !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            font-weight: 500 !important;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: rgba(239, 68, 68, 0.5) !important;
+            color: #fff !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        /* Elegant welcome section */
+        .welcome-section {
+            background: rgba(15, 23, 42, 0.6) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 215, 0, 0.1) !important;
+            border-radius: 12px !important;
+            margin: 2rem !important;
+            padding: 3rem !important;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.05) inset !important;
+        }
+        
+        h1 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            font-weight: 700 !important;
+            font-size: 3.5rem !important;
+            text-align: center !important;
+            margin-bottom: 1rem !important;
+            text-shadow: none !important;
+        }
+        
+        .user-info {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(255, 215, 0, 0.2) !important;
+            border-radius: 8px !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        .chips {
+            color: #10b981 !important;
+            font-weight: 600 !important;
+            text-shadow: 0 0 4px rgba(16, 185, 129, 0.3) !important;
+        }
+        
+        /* Professional Home Page Styling */
+        .home-page {
+            padding: 0 !important;
+        }
+        
+        .hero-section {
+            background: 
+                radial-gradient(ellipse at center top, rgba(251, 191, 36, 0.08) 0%, transparent 70%),
+                linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 81, 50, 0.7) 100%) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 215, 0, 0.1) !important;
+            border-radius: 16px !important;
+            margin: 2rem !important;
+            padding: 4rem 2rem !important;
+            text-align: center !important;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 1px 0 rgba(255, 255, 255, 0.05) inset,
+                0 0 80px rgba(251, 191, 36, 0.05) !important;
+        }
+        
+        .hero-content {
+            max-width: 800px !important;
+            margin: 0 auto !important;
+        }
+        
+        .hero-title {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            font-weight: 700 !important;
+            font-size: 4rem !important;
+            text-align: center !important;
+            margin-bottom: 1rem !important;
+            text-shadow: none !important;
+            line-height: 1.1 !important;
+        }
+        
+        .hero-subtitle {
+            color: #cbd5e1 !important;
+            font-size: 1.5rem !important;
+            font-weight: 300 !important;
+            margin-bottom: 3rem !important;
+            opacity: 0.9 !important;
+        }
+        
+        .hero-actions {
+            display: flex !important;
+            gap: 1.5rem !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+        }
+        
+        .btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1rem 2rem !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: none !important;
+            font-size: 1.1rem !important;
+            min-width: 160px !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: #1f2937 !important;
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.3) !important;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 32px rgba(251, 191, 36, 0.4) !important;
+        }
+        
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.8) !important;
+            color: #f8fafc !important;
+            border: 1px solid rgba(255, 215, 0, 0.2) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(15, 23, 42, 0.9) !important;
+            border-color: rgba(255, 215, 0, 0.4) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .btn-large {
+            padding: 1.25rem 2.5rem !important;
+            font-size: 1.2rem !important;
+        }
+        
+        .features-section {
+            padding: 4rem 2rem !important;
+            text-align: center !important;
+        }
+        
+        .features-section h2 {
+            color: #f8fafc !important;
+            font-size: 2.5rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 3rem !important;
+            position: relative !important;
+        }
+        
+        .features-section h2::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -10px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 80px !important;
+            height: 3px !important;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b) !important;
+            border-radius: 2px !important;
+        }
+        
+        .features-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+            gap: 2rem !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+        }
+        
+        .feature-card {
+            background: rgba(15, 23, 42, 0.6) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 215, 0, 0.1) !important;
+            border-radius: 12px !important;
+            padding: 2.5rem 2rem !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        
+        .feature-card::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 1px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent) !important;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px) !important;
+            border-color: rgba(255, 215, 0, 0.3) !important;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(251, 191, 36, 0.1) !important;
+        }
+        
+        .feature-card h3 {
+            color: #fbbf24 !important;
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .feature-card p {
+            color: #cbd5e1 !important;
+            line-height: 1.6 !important;
+            font-size: 1.1rem !important;
+        }
+        
+        /* Footer styling */
+        .app-footer {
+            background: rgba(15, 23, 42, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border-top: 1px solid rgba(255, 215, 0, 0.1) !important;
+            margin-top: 4rem !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem !important;
+            }
+            
+            .hero-actions {
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+            
+            .btn {
+                min-width: 200px !important;
+            }
+            
+            .features-section h2 {
+                font-size: 2rem !important;
+            }
         }
         
         .hero-title {
