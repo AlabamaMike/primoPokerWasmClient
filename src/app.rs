@@ -139,6 +139,7 @@ fn switch(routes: AppRoute) -> Html {
             <crate::components::game::GamePage room_id={room_id} /> 
         },
         AppRoute::Profile => html! { <crate::components::profile::ProfilePage /> },
+        AppRoute::Demo => html! { <crate::components::demo::ComponentDemo /> },
         AppRoute::NotFound => html! { <crate::components::pages::NotFoundPage /> },
     }
 }

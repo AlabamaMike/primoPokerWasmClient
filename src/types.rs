@@ -19,6 +19,8 @@ pub enum AppRoute {
     Game { room_id: String },
     #[at("/profile")]
     Profile,
+    #[at("/demo")]
+    Demo,
     #[not_found]
     #[at("/404")]
     NotFound,
