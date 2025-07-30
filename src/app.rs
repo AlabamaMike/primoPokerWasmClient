@@ -54,13 +54,18 @@ impl Component for App {
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             AppMsg::UserLoggedIn(user) => {
                 // Store user data in local storage
                 let _ = LocalStorage::set("primo_poker_user", &user);
                 self.auth_state = AuthState::Authenticated(user);
                 self.loading = false;
+                
+                // Navigate to lobby after successful authentication
+                if let Some(navigator) = ctx.link().navigator() {
+                    navigator.push(&AppRoute::Lobby);
+                }
                 true
             }
             AppMsg::UserLoggedOut => {

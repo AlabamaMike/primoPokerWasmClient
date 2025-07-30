@@ -65,11 +65,9 @@ impl Component for LobbyPage {
         // Try to load authenticated user data from local storage
         if let Ok(user) = LocalStorage::get::<User>("primo_poker_user") {
             link.send_message(LobbyMsg::UserDataLoaded(user));
-        } else {
-            // No authenticated user - redirect to login
-            let navigator = ctx.link().navigator().unwrap();
-            navigator.push(&AppRoute::Login);
         }
+        // Note: Removed immediate redirect to allow lobby to load even without user data
+        // The app component handles authentication navigation
 
         // Create mock room data for testing
         let mock_rooms = vec![

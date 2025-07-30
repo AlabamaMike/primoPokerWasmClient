@@ -119,8 +119,6 @@ impl Component for LoginPage {
                 self.loading = false;
                 // Navigation to lobby will be handled by the app component
                 // after it receives the UserLoggedIn message
-                let navigator = ctx.link().navigator().unwrap();
-                navigator.push(&AppRoute::Lobby);
                 true
             }
             LoginMsg::LoginError(error) => {

@@ -4,6 +4,7 @@
 @import url('./auth.css');
 @import url('./home.css');
 @import url('./components.css');
+@import url('./game.css');
 /* Import visual enhancements last to ensure they override base styles */
 @import url('./visual-enhancements.css');
 
