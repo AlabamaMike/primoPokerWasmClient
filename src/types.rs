@@ -105,21 +105,6 @@ pub struct PlayerInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct RoomInfo {
-    pub id: String,
-    pub name: String,
-    pub game_type: GameType,
-    pub max_players: u8,
-    pub current_players: u8,
-    pub small_blind: i64,
-    pub big_blind: i64,
-    pub min_buy_in: i64,
-    pub max_buy_in: i64,
-    pub is_private: bool,
-    pub created_at: DateTime<Utc>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum GameType {
     TexasHoldem,
     Omaha,
@@ -221,6 +206,35 @@ pub struct RoomConfig {
     pub max_buy_in: i64,
     pub is_private: bool,
     pub password: Option<String>,
+}
+
+// Lobby and room types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct GameRoom {
+    pub id: String,
+    pub name: String,
+    pub game_type: GameType,
+    pub current_players: u8,
+    pub max_players: u8,
+    pub small_blind: i64,
+    pub big_blind: i64,
+    pub min_buy_in: i64,
+    pub max_buy_in: i64,
+    pub is_private: bool,
+    pub is_active: bool,
+    pub created_at: DateTime<Utc>,
+}
+
+pub type RoomInfo = GameRoom; // Alias for compatibility
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct RoomFilter {
+    pub min_stakes: Option<i64>,
+    pub max_stakes: Option<i64>,
+    pub max_players_filter: Option<u8>,
+    pub game_types: Vec<GameType>,
+    pub show_full_rooms: bool,
+    pub show_empty_rooms: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

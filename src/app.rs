@@ -34,7 +34,7 @@ impl Component for App {
     type Properties = ();
 
     fn create(ctx: &Context<Self>) -> Self {
-        let auth_service = AuthService::new(ctx.link().clone());
+        let auth_service = AuthService::new_for_app(ctx.link().clone());
         let websocket_service = WebSocketService::new(ctx.link().clone());
         
         // Try to restore authentication state from local storage

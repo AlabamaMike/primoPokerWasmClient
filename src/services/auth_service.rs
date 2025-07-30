@@ -1,5 +1,6 @@
 // Authentication service - handles user login, registration, and token management
 use yew::html::Scope;
+use yew::Callback;
 use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
 
@@ -8,14 +9,26 @@ use crate::app::AppMsg;
 
 const API_BASE_URL: &str = "https://api.primopoker.com"; // Replace with actual API URL
 
+#[derive(Clone)]
 pub struct AuthService {
-    link: Scope<crate::app::App>,
+    on_auth_success: Callback<User>,
+    on_auth_error: Callback<String>,
 }
 
 impl AuthService {
-    pub fn new(link: Scope<crate::app::App>) -> Self {
-        Self { link }
+    pub fn new(on_auth_success: Callback<User>, on_auth_error: Callback<String>) -> Self {
+        Self { 
+            on_auth_success,
+            on_auth_error 
+        }
     }
+    
+    pub fn new_for_app(link: Scope<crate::app::App>) -> Self {
+        let on_success = link.callback(|user: User| AppMsg::UserLoggedIn(user));
+        let on_error = link.callback(|error: String| AppMsg::Error(error));
+        Self::new(on_success, on_error)
+    }
+    
     
     pub async fn login(&self, credentials: LoginCredentials) -> Result<User, PokerError> {
         let response = Request::post(&format!("{}/auth/login", API_BASE_URL))
@@ -37,13 +50,14 @@ impl AuthService {
                 let _ = LocalStorage::set("primo_poker_token", auth_header);
             }
             
-            self.link.send_message(AppMsg::UserLoggedIn(user.clone()));
+            self.on_auth_success.emit(user.clone());
             Ok(user)
         } else {
             let error_msg = response
                 .text()
                 .await
                 .unwrap_or_else(|_| "Login failed".to_string());
+            self.on_auth_error.emit(error_msg.clone());
             Err(PokerError::AuthenticationError(error_msg))
         }
     }
@@ -68,23 +82,16 @@ impl AuthService {
                 let _ = LocalStorage::set("primo_poker_token", auth_header);
             }
             
-            self.link.send_message(AppMsg::UserLoggedIn(user.clone()));
+            self.on_auth_success.emit(user.clone());
             Ok(user)
         } else {
             let error_msg = response
                 .text()
                 .await
                 .unwrap_or_else(|_| "Registration failed".to_string());
+            self.on_auth_error.emit(error_msg.clone());
             Err(PokerError::AuthenticationError(error_msg))
         }
-    }
-    
-    pub fn logout(&self) {
-        // Clear stored authentication data
-        LocalStorage::delete("primo_poker_token");
-        LocalStorage::delete("primo_poker_user");
-        
-        self.link.send_message(AppMsg::UserLoggedOut);
     }
     
     pub fn get_stored_token(&self) -> Option<String> {
