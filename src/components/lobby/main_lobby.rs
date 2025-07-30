@@ -6,6 +6,7 @@ use wasm_bindgen::JsCast;
 use chrono::Utc;
 
 use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute};
+use super::{RoomFilters, RoomCard};
 
 #[derive(Clone, Default)]
 pub struct CreateRoomForm {
@@ -39,6 +40,7 @@ pub enum LobbyMsg {
     WebSocketConnected,
     WebSocketDisconnected,
     UpdateFilter(RoomFilter),
+    ResetFilters,
     UpdateFilterGameType(GameType),
     UpdateFilterStakes(Option<i64>, Option<i64>),
     UpdateFilterPlayers(Option<u8>),
@@ -181,6 +183,18 @@ impl Component for LobbyPage {
             }
             LobbyMsg::UpdateFilter(new_filter) => {
                 self.filter_criteria = new_filter;
+                self.apply_filters();
+                true
+            }
+            LobbyMsg::ResetFilters => {
+                self.filter_criteria = RoomFilter {
+                    min_stakes: None,
+                    max_stakes: None,
+                    max_players_filter: None,
+                    game_types: vec![GameType::TexasHoldem],
+                    show_full_rooms: true,
+                    show_empty_rooms: true,
+                };
                 self.apply_filters();
                 true
             }
@@ -390,8 +404,8 @@ impl Component for LobbyPage {
             LobbyMsg::UpdateFilterGameType(game_type)
         });
         
-        let on_toggle_empty = link.callback(|_| LobbyMsg::ToggleEmptyRooms);
-        let on_toggle_full = link.callback(|_| LobbyMsg::ToggleFullRooms);
+        let on_toggle_empty = link.callback(|_: MouseEvent| LobbyMsg::ToggleEmptyRooms);
+        let on_toggle_full = link.callback(|_: MouseEvent| LobbyMsg::ToggleFullRooms);
         
         // Create room form callbacks
         let on_form_input = link.callback(|(field, value): (String, String)| {
@@ -443,72 +457,12 @@ impl Component for LobbyPage {
 
                 // Main Content
                 <div class="lobby-content">
-                    // Filters Section
-                    <div class="filters-section">
-                        <h3>{"Filter Games"}</h3>
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label>{"Game Type:"}</label>
-                                <select onchange={on_game_type_change}>
-                                    <option value="texas_holdem" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::TexasHoldem))}>
-                                        {"Texas Hold'em"}
-                                    </option>
-                                    <option value="omaha" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::Omaha))}>
-                                        {"Omaha"}
-                                    </option>
-                                    <option value="seven_card_stud" selected={matches!(self.filter_criteria.game_types.first(), Some(GameType::SevenCardStud))}>
-                                        {"Seven Card Stud"}
-                                    </option>
-                                </select>
-                            </div>
-                            
-                            <div class="filter-group">
-                                <label>{"Stakes Range:"}</label>
-                                <div class="stakes-inputs">
-                                    <input 
-                                        type="number" 
-                                        placeholder="Min stakes" 
-                                        value={self.filter_criteria.min_stakes.map(|v| v.to_string()).unwrap_or_default()}
-                                    />
-                                    <span>{" - "}</span>
-                                    <input 
-                                        type="number" 
-                                        placeholder="Max stakes"
-                                        value={self.filter_criteria.max_stakes.map(|v| v.to_string()).unwrap_or_default()}
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div class="filter-group">
-                                <label>{"Players:"}</label>
-                                <select>
-                                    <option value="" selected={self.filter_criteria.max_players_filter.is_none()}>{"Any"}</option>
-                                    <option value="2" selected={self.filter_criteria.max_players_filter == Some(2)}>{"2 Players"}</option>
-                                    <option value="6" selected={self.filter_criteria.max_players_filter == Some(6)}>{"6 Players"}</option>
-                                    <option value="9" selected={self.filter_criteria.max_players_filter == Some(9)}>{"9 Players"}</option>
-                                </select>
-                            </div>
-                            
-                            <div class="filter-toggles">
-                                <label class="toggle-label">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={self.filter_criteria.show_empty_rooms}
-                                        onchange={on_toggle_empty}
-                                    />
-                                    <span>{"Show empty rooms"}</span>
-                                </label>
-                                <label class="toggle-label">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={self.filter_criteria.show_full_rooms}
-                                        onchange={on_toggle_full}
-                                    />
-                                    <span>{"Show full rooms"}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    // Enhanced Filters Section
+                    <RoomFilters 
+                        current_filter={self.filter_criteria.clone()}
+                        on_filter_change={link.callback(LobbyMsg::UpdateFilter)}
+                        on_reset_filters={link.callback(|_| LobbyMsg::ResetFilters)}
+                    />
 
                     // Action Buttons
                     <div class="action-buttons">
@@ -544,65 +498,15 @@ impl Component for LobbyPage {
                                 </div>
                             </div>
                         } else {
-                            <div class="rooms-table">
-                                <div class="table-header">
-                                    <span class="col-name">{"Room Name"}</span>
-                                    <span class="col-game">{"Game"}</span>
-                                    <span class="col-stakes">{"Stakes"}</span>
-                                    <span class="col-players">{"Players"}</span>
-                                    <span class="col-action">{"Action"}</span>
-                                </div>
-                                
-                                <div class="table-body">
-                                    { for self.filtered_rooms.iter().map(|room| {
-                                        let room_id = room.id.clone();
-                                        let join_callback = {
-                                            let room_id = room_id.clone();
-                                            on_join_room.reform(move |_| room_id.clone())
-                                        };
-                                        
-                                        html! {
-                                            <div class="room-row">
-                                                <div class="col-name">
-                                                    <div class="room-name">{&room.name}</div>
-                                                    if room.is_private {
-                                                        <span class="private-badge">{"🔒 Private"}</span>
-                                                    }
-                                                </div>
-                                                <div class="col-game">
-                                                    <span class="game-type">{format!("{:?}", room.game_type)}</span>
-                                                </div>
-                                                <div class="col-stakes">
-                                                    <span class="stakes">{format!("{}/{}", room.small_blind, room.big_blind)}</span>
-                                                    <div class="buy-in">{format!("Buy-in: {}-{}", room.min_buy_in, room.max_buy_in)}</div>
-                                                </div>
-                                                <div class="col-players">
-                                                    <span class={classes!(
-                                                        "player-count",
-                                                        if room.current_players == room.max_players { Some("full") } else { None },
-                                                        if room.current_players == 0 { Some("empty") } else { None }
-                                                    )}>
-                                                        {format!("{}/{}", room.current_players, room.max_players)}
-                                                    </span>
-                                                </div>
-                                                <div class="col-action">
-                                                    if room.current_players < room.max_players {
-                                                        <button 
-                                                            class="join-btn primary"
-                                                            onclick={join_callback}
-                                                        >
-                                                            {"Join"}
-                                                        </button>
-                                                    } else {
-                                                        <button class="join-btn disabled" disabled=true>
-                                                            {"Full"}
-                                                        </button>
-                                                    }
-                                                </div>
-                                            </div>
-                                        }
-                                    }) }
-                                </div>
+                            <div class="rooms-grid">
+                                { for self.filtered_rooms.iter().map(|room| {
+                                    html! {
+                                        <RoomCard 
+                                            room={room.clone()}
+                                            on_join={on_join_room.clone()}
+                                        />
+                                    }
+                                }) }
                             </div>
                         }
                     </div>

@@ -5,6 +5,8 @@
 @import url('./home.css');
 @import url('./components.css');
 @import url('./game.css');
+@import url('./lobby/room-filters.css');
+@import url('./lobby/room-cards.css');
 /* Import visual enhancements last to ensure they override base styles */
 @import url('./visual-enhancements.css');
 
@@ -546,5 +548,36 @@ body {
     
     .loading-logo {
         width: 80px;
+    }
+}
+
+/* Enhanced Lobby Layout */
+.lobby-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .rooms-grid {
+        margin-top: 1rem;
+    }
+    
+    .lobby-content {
+        padding: 0 0.5rem;
     }
 }
