@@ -3,6 +3,7 @@ use yew::html::Scope;
 use yew::Callback;
 use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
+use gloo_timers::future::TimeoutFuture;
 
 use crate::types::{User, LoginCredentials, RegisterData, PokerError};
 use crate::app::AppMsg;
@@ -31,67 +32,83 @@ impl AuthService {
     
     
     pub async fn login(&self, credentials: LoginCredentials) -> Result<User, PokerError> {
-        let response = Request::post(&format!("{}/auth/login", API_BASE_URL))
-            .header("Content-Type", "application/json")
-            .json(&credentials)
-            .map_err(|e| PokerError::NetworkError(e.to_string()))?
-            .send()
-            .await
-            .map_err(|e| PokerError::NetworkError(e.to_string()))?;
-
-        if response.ok() {
-            let user: User = response
-                .json()
-                .await
-                .map_err(|e| PokerError::NetworkError(e.to_string()))?;
-            
-            // Store authentication token
-            if let Some(auth_header) = response.headers().get("authorization") {
-                let _ = LocalStorage::set("primo_poker_token", auth_header);
-            }
-            
-            self.on_auth_success.emit(user.clone());
-            Ok(user)
-        } else {
-            let error_msg = response
-                .text()
-                .await
-                .unwrap_or_else(|_| "Login failed".to_string());
+        // Mock authentication for Phase 1 testing
+        // In production, this would make real API calls
+        
+        // Simulate network delay
+        TimeoutFuture::new(500).await;
+        
+        // Basic validation
+        if credentials.username.trim().is_empty() || credentials.password.is_empty() {
+            let error_msg = "Invalid credentials".to_string();
             self.on_auth_error.emit(error_msg.clone());
-            Err(PokerError::AuthenticationError(error_msg))
+            return Err(PokerError::AuthenticationError(error_msg));
         }
+        
+        // For testing, accept any non-empty credentials
+        let user = User {
+            id: uuid::Uuid::new_v4(),
+            username: credentials.username.clone(),
+            email: format!("{}@primopoker.com", credentials.username),
+            display_name: credentials.username.clone(),
+            avatar_url: None,
+            chips: 10000, // Starting chips
+            level: 1,
+            experience: 0,
+            created_at: chrono::Utc::now(),
+            last_active: chrono::Utc::now(),
+        };
+        
+        // Store mock token
+        let _ = LocalStorage::set("primo_poker_token", "mock_jwt_token_12345");
+        
+        self.on_auth_success.emit(user.clone());
+        Ok(user)
     }
     
     pub async fn register(&self, register_data: RegisterData) -> Result<User, PokerError> {
-        let response = Request::post(&format!("{}/auth/register", API_BASE_URL))
-            .header("Content-Type", "application/json")
-            .json(&register_data)
-            .map_err(|e| PokerError::NetworkError(e.to_string()))?
-            .send()
-            .await
-            .map_err(|e| PokerError::NetworkError(e.to_string()))?;
-
-        if response.ok() {
-            let user: User = response
-                .json()
-                .await
-                .map_err(|e| PokerError::NetworkError(e.to_string()))?;
-            
-            // Store authentication token
-            if let Some(auth_header) = response.headers().get("authorization") {
-                let _ = LocalStorage::set("primo_poker_token", auth_header);
-            }
-            
-            self.on_auth_success.emit(user.clone());
-            Ok(user)
-        } else {
-            let error_msg = response
-                .text()
-                .await
-                .unwrap_or_else(|_| "Registration failed".to_string());
+        // Mock registration for Phase 1 testing
+        // In production, this would make real API calls
+        
+        // Simulate network delay
+        TimeoutFuture::new(750).await;
+        
+        // Basic validation
+        if register_data.username.trim().is_empty() 
+            || register_data.email.trim().is_empty()
+            || register_data.password.is_empty() 
+            || register_data.display_name.trim().is_empty() {
+            let error_msg = "All fields are required".to_string();
             self.on_auth_error.emit(error_msg.clone());
-            Err(PokerError::AuthenticationError(error_msg))
+            return Err(PokerError::AuthenticationError(error_msg));
         }
+        
+        // Mock email validation
+        if !register_data.email.contains('@') {
+            let error_msg = "Invalid email address".to_string();
+            self.on_auth_error.emit(error_msg.clone());
+            return Err(PokerError::AuthenticationError(error_msg));
+        }
+        
+        // For testing, create a new user
+        let user = User {
+            id: uuid::Uuid::new_v4(),
+            username: register_data.username.clone(),
+            email: register_data.email.clone(),
+            display_name: register_data.display_name.clone(),
+            avatar_url: None,
+            chips: 10000, // Starting chips
+            level: 1,
+            experience: 0,
+            created_at: chrono::Utc::now(),
+            last_active: chrono::Utc::now(),
+        };
+        
+        // Store mock token
+        let _ = LocalStorage::set("primo_poker_token", "mock_jwt_token_12345");
+        
+        self.on_auth_success.emit(user.clone());
+        Ok(user)
     }
     
     pub fn get_stored_token(&self) -> Option<String> {

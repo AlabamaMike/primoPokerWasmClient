@@ -1,6 +1,7 @@
 // Common UI components used throughout the application
 use yew::prelude::*;
 use yew_router::prelude::*;
+use gloo_storage::{LocalStorage, Storage};
 
 use crate::types::AppRoute;
 use crate::auth::AuthState;
@@ -18,7 +19,12 @@ pub fn header(props: &HeaderProps) -> Html {
     let on_logout = {
         let navigator = navigator.clone();
         Callback::from(move |_| {
-            // This would call the auth service logout
+            // Clear stored user data on logout
+            LocalStorage::delete("primo_poker_user");
+            LocalStorage::delete("primo_poker_remember");
+            LocalStorage::delete("primo_poker_username");
+            
+            // Navigate to home page
             navigator.push(&AppRoute::Home);
         })
     };

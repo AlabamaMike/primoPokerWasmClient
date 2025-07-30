@@ -1,5 +1,9 @@
 /* PrimoPoker - Main Stylesheet */
 
+/* Import component stylesheets */
+@import url('./auth.css');
+@import url('./home.css');
+
 /* CSS Reset and Base Styles */
 * {
     margin: 0;

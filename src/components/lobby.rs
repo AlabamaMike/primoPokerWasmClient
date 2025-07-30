@@ -62,29 +62,13 @@ impl Component for LobbyPage {
     fn create(ctx: &Context<Self>) -> Self {
         let link = ctx.link().clone();
         
-        // Try to load user data from local storage
+        // Try to load authenticated user data from local storage
         if let Ok(user) = LocalStorage::get::<User>("primo_poker_user") {
             link.send_message(LobbyMsg::UserDataLoaded(user));
         } else {
-            // For testing: Create mock user data instead of redirecting to login
-            use uuid::Uuid;
-            
-            let mock_user = User {
-                id: Uuid::new_v4(),
-                username: "TestPlayer".to_string(),
-                email: "test@primopoker.com".to_string(),
-                display_name: "Test Player".to_string(),
-                avatar_url: None,
-                chips: 10000,
-                level: 5,
-                experience: 2500,
-                created_at: Utc::now(),
-                last_active: Utc::now(),
-            };
-            
-            // Store mock user data and load it
-            let _ = LocalStorage::set("primo_poker_user", &mock_user);
-            link.send_message(LobbyMsg::UserDataLoaded(mock_user));
+            // No authenticated user - redirect to login
+            let navigator = ctx.link().navigator().unwrap();
+            navigator.push(&AppRoute::Login);
         }
 
         // Create mock room data for testing
