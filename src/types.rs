@@ -35,10 +35,12 @@ pub struct User {
     pub display_name: String,
     pub avatar_url: Option<String>,
     pub chips: i64,
+    pub balance: i64, // Additional balance field for modal
     pub level: i32,
     pub experience: i64,
     pub created_at: DateTime<Utc>,
     pub last_active: DateTime<Utc>,
+    pub status: Option<PlayerStatus>, // Player status for social features
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -393,9 +395,15 @@ pub enum PlayerStatus {
 pub struct PlayerStats {
     pub games_played: u32,
     pub games_won: u32,
+    pub games_lost: u32,
     pub total_winnings: i64,
+    pub biggest_win: i64,
     pub win_rate: f64,
     pub avg_session_length: u32, // minutes
+    pub average_pot_size: f64,
+    pub bluff_frequency: f64,
+    pub fold_percentage: f64,
+    pub all_in_frequency: f64,
 }
 
 impl Default for PlayerStats {
@@ -403,9 +411,15 @@ impl Default for PlayerStats {
         Self {
             games_played: 0,
             games_won: 0,
+            games_lost: 0,
             total_winnings: 0,
+            biggest_win: 0,
             win_rate: 0.0,
             avg_session_length: 0,
+            average_pot_size: 0.0,
+            bluff_frequency: 0.0,
+            fold_percentage: 0.0,
+            all_in_frequency: 0.0,
         }
     }
 }

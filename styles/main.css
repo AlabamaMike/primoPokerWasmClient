@@ -8,6 +8,7 @@
 @import url('./lobby/room-filters.css');
 @import url('./lobby/room-cards.css');
 @import url('./lobby/player-sidebar.css');
+@import url('./lobby/player-profile-modal.css');
 /* Import visual enhancements last to ensure they override base styles */
 @import url('./visual-enhancements.css');
 

@@ -53,10 +53,12 @@ impl AuthService {
             display_name: credentials.username.clone(),
             avatar_url: None,
             chips: 10000, // Starting chips
+            balance: 10000, // Starting balance
             level: 1,
             experience: 0,
             created_at: chrono::Utc::now(),
             last_active: chrono::Utc::now(),
+            status: Some(crate::types::PlayerStatus::Online),
         };
         
         // Store mock token
@@ -98,10 +100,12 @@ impl AuthService {
             display_name: register_data.display_name.clone(),
             avatar_url: None,
             chips: 10000, // Starting chips
+            balance: 10000, // Starting balance
             level: 1,
             experience: 0,
             created_at: chrono::Utc::now(),
             last_active: chrono::Utc::now(),
+            status: Some(crate::types::PlayerStatus::Online),
         };
         
         // Store mock token

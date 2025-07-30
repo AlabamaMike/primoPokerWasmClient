@@ -4,9 +4,10 @@ use gloo_storage::{LocalStorage, Storage};
 use web_sys::HtmlInputElement;
 use wasm_bindgen::JsCast;
 use chrono::Utc;
+use uuid::Uuid;
 
-use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute};
-use super::{RoomFilters, RoomCard, PlayerSidebar};
+use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute, PlayerStats, PlayerStatus};
+use super::{RoomFilters, RoomCard, PlayerSidebar, PlayerProfileModal};
 
 #[derive(Clone, Default)]
 pub struct CreateRoomForm {
@@ -32,6 +33,11 @@ pub struct LobbyPage {
     error_message: Option<String>,
     create_room_form: CreateRoomForm,
     sidebar_collapsed: bool,
+    // Player Profile Modal state
+    show_player_profile: bool,
+    selected_player: Option<User>,
+    selected_player_stats: Option<PlayerStats>,
+    is_selected_player_friend: bool,
 }
 
 pub enum LobbyMsg {
@@ -58,6 +64,13 @@ pub enum LobbyMsg {
     ClearError,
     ToggleSidebar,
     SelectPlayer(String),
+    // Player Profile Modal messages
+    ShowPlayerProfile(String), // player_id
+    HidePlayerProfile,
+    AddFriend(String),
+    RemoveFriend(String),
+    SendMessage(String),
+    InviteToGame(String),
 }
 
 impl Component for LobbyPage {
@@ -148,6 +161,11 @@ impl Component for LobbyPage {
                 password: String::new(),
             },
             sidebar_collapsed: false,
+            // Player Profile Modal state
+            show_player_profile: false,
+            selected_player: None,
+            selected_player_stats: None,
+            is_selected_player_friend: false,
         }
     }
 
@@ -373,8 +391,73 @@ impl Component for LobbyPage {
                 true
             }
             LobbyMsg::SelectPlayer(player_id) => {
-                // TODO: Show player profile or navigate
-                web_sys::console::log_1(&format!("Selected player: {}", player_id).into());
+                // Show player profile instead of just logging
+                ctx.link().send_message(LobbyMsg::ShowPlayerProfile(player_id));
+                false
+            }
+            LobbyMsg::ShowPlayerProfile(player_id) => {
+                // Create mock player data - in real app this would be an API call
+                let mock_player = User {
+                    id: Uuid::new_v4(), // Generate a proper UUID
+                    username: format!("player_{}", &player_id[..6]),
+                    display_name: format!("Player {}", &player_id[..6].to_uppercase()),
+                    email: format!("{}@example.com", &player_id[..6]),
+                    chips: 10000,
+                    balance: 15000,
+                    level: 5,
+                    experience: 2500,
+                    avatar_url: None,
+                    created_at: Utc::now() - chrono::Duration::days(180),
+                    last_active: Utc::now() - chrono::Duration::hours(2),
+                    status: Some(PlayerStatus::Online),
+                };
+
+                let mock_stats = PlayerStats {
+                    games_played: 243,
+                    games_won: 145,
+                    games_lost: 98,
+                    total_winnings: 12500,
+                    biggest_win: 2500,
+                    win_rate: 59.7,
+                    avg_session_length: 120,
+                    average_pot_size: 450.0,
+                    bluff_frequency: 23.5,
+                    fold_percentage: 45.2,
+                    all_in_frequency: 8.7,
+                };
+
+                self.selected_player = Some(mock_player);
+                self.selected_player_stats = Some(mock_stats);
+                self.is_selected_player_friend = false; // TODO: Check actual friend status
+                self.show_player_profile = true;
+                true
+            }
+            LobbyMsg::HidePlayerProfile => {
+                self.show_player_profile = false;
+                self.selected_player = None;
+                self.selected_player_stats = None;
+                true
+            }
+            LobbyMsg::AddFriend(player_id) => {
+                // TODO: API call to add friend
+                web_sys::console::log_1(&format!("Adding friend: {}", player_id).into());
+                self.is_selected_player_friend = true;
+                true
+            }
+            LobbyMsg::RemoveFriend(player_id) => {
+                // TODO: API call to remove friend
+                web_sys::console::log_1(&format!("Removing friend: {}", player_id).into());
+                self.is_selected_player_friend = false;
+                true
+            }
+            LobbyMsg::SendMessage(player_id) => {
+                // TODO: Open chat/message interface
+                web_sys::console::log_1(&format!("Sending message to: {}", player_id).into());
+                false
+            }
+            LobbyMsg::InviteToGame(player_id) => {
+                // TODO: Send game invitation
+                web_sys::console::log_1(&format!("Inviting player to game: {}", player_id).into());
                 false
             }
         }
@@ -677,6 +760,21 @@ impl Component for LobbyPage {
                             </div>
                         </div>
                     </div>
+                }
+
+                // Player Profile Modal
+                if let (Some(player), Some(stats)) = (&self.selected_player, &self.selected_player_stats) {
+                    <PlayerProfileModal 
+                        player={player.clone()}
+                        stats={stats.clone()}
+                        is_friend={self.is_selected_player_friend}
+                        show={self.show_player_profile}
+                        on_close={link.callback(|_| LobbyMsg::HidePlayerProfile)}
+                        on_add_friend={link.callback(LobbyMsg::AddFriend)}
+                        on_remove_friend={link.callback(LobbyMsg::RemoveFriend)}
+                        on_send_message={link.callback(LobbyMsg::SendMessage)}
+                        on_invite_to_game={link.callback(LobbyMsg::InviteToGame)}
+                    />
                 }
             </div>
         }
