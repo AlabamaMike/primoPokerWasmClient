@@ -380,3 +380,32 @@ impl std::fmt::Display for Card {
         }
     }
 }
+
+// Social and Player Status Types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum PlayerStatus {
+    Online,
+    Playing,
+    Away,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerStats {
+    pub games_played: u32,
+    pub games_won: u32,
+    pub total_winnings: i64,
+    pub win_rate: f64,
+    pub avg_session_length: u32, // minutes
+}
+
+impl Default for PlayerStats {
+    fn default() -> Self {
+        Self {
+            games_played: 0,
+            games_won: 0,
+            total_winnings: 0,
+            win_rate: 0.0,
+            avg_session_length: 0,
+        }
+    }
+}

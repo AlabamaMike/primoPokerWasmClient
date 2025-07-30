@@ -6,7 +6,7 @@ use wasm_bindgen::JsCast;
 use chrono::Utc;
 
 use crate::types::{User, GameRoom, RoomFilter, GameType, AppRoute};
-use super::{RoomFilters, RoomCard};
+use super::{RoomFilters, RoomCard, PlayerSidebar};
 
 #[derive(Clone, Default)]
 pub struct CreateRoomForm {
@@ -31,6 +31,7 @@ pub struct LobbyPage {
     show_create_room_modal: bool,
     error_message: Option<String>,
     create_room_form: CreateRoomForm,
+    sidebar_collapsed: bool,
 }
 
 pub enum LobbyMsg {
@@ -55,6 +56,8 @@ pub enum LobbyMsg {
     QuickJoin,
     Error(String),
     ClearError,
+    ToggleSidebar,
+    SelectPlayer(String),
 }
 
 impl Component for LobbyPage {
@@ -144,6 +147,7 @@ impl Component for LobbyPage {
                 is_private: false,
                 password: String::new(),
             },
+            sidebar_collapsed: false,
         }
     }
 
@@ -364,6 +368,15 @@ impl Component for LobbyPage {
                 self.error_message = None;
                 true
             }
+            LobbyMsg::ToggleSidebar => {
+                self.sidebar_collapsed = !self.sidebar_collapsed;
+                true
+            }
+            LobbyMsg::SelectPlayer(player_id) => {
+                // TODO: Show player profile or navigate
+                web_sys::console::log_1(&format!("Selected player: {}", player_id).into());
+                false
+            }
         }
     }
 
@@ -456,60 +469,70 @@ impl Component for LobbyPage {
                 }
 
                 // Main Content
-                <div class="lobby-content">
-                    // Enhanced Filters Section
-                    <RoomFilters 
-                        current_filter={self.filter_criteria.clone()}
-                        on_filter_change={link.callback(LobbyMsg::UpdateFilter)}
-                        on_reset_filters={link.callback(|_| LobbyMsg::ResetFilters)}
-                    />
+                <div class="lobby-main-container">
+                    <div class="lobby-content">
+                        // Enhanced Filters Section
+                        <RoomFilters 
+                            current_filter={self.filter_criteria.clone()}
+                            on_filter_change={link.callback(LobbyMsg::UpdateFilter)}
+                            on_reset_filters={link.callback(|_| LobbyMsg::ResetFilters)}
+                        />
 
-                    // Action Buttons
-                    <div class="action-buttons">
-                        <button 
-                            class="create-room-btn primary"
-                            onclick={on_show_create_modal.clone()}
-                        >
-                            {"🏠 Create Room"}
-                        </button>
-                        <button class="quick-join-btn secondary" onclick={on_quick_join}>
-                            {"⚡ Quick Join"}
-                        </button>
-                    </div>
-
-                    // Room List
-                    <div class="rooms-section">
-                        <div class="rooms-header">
-                            <h3>{format!("Available Games ({})", self.filtered_rooms.len())}</h3>
-                            <button class="refresh-btn" onclick={on_refresh_rooms}>{"🔄 Refresh"}</button>
+                        // Action Buttons
+                        <div class="action-buttons">
+                            <button 
+                                class="create-room-btn primary"
+                                onclick={on_show_create_modal.clone()}
+                            >
+                                {"🏠 Create Room"}
+                            </button>
+                            <button class="quick-join-btn secondary" onclick={on_quick_join}>
+                                {"⚡ Quick Join"}
+                            </button>
                         </div>
-                        
-                        if self.filtered_rooms.is_empty() {
-                            <div class="no-rooms">
-                                <div class="empty-state">
-                                    <h4>{"No games match your filters"}</h4>
-                                    <p>{"Try adjusting your filter criteria or create a new room"}</p>
-                                    <button 
-                                        class="create-room-btn primary"
-                                        onclick={on_show_create_modal}
-                                    >
-                                        {"Create New Room"}
-                                    </button>
+
+                        // Room List
+                        <div class="rooms-section">
+                            <div class="rooms-header">
+                                <h3>{format!("Available Games ({})", self.filtered_rooms.len())}</h3>
+                                <button class="refresh-btn" onclick={on_refresh_rooms}>{"🔄 Refresh"}</button>
+                            </div>
+                            
+                            if self.filtered_rooms.is_empty() {
+                                <div class="no-rooms">
+                                    <div class="empty-state">
+                                        <h4>{"No games match your filters"}</h4>
+                                        <p>{"Try adjusting your filter criteria or create a new room"}</p>
+                                        <button 
+                                            class="create-room-btn primary"
+                                            onclick={on_show_create_modal}
+                                        >
+                                            {"Create New Room"}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        } else {
-                            <div class="rooms-grid">
-                                { for self.filtered_rooms.iter().map(|room| {
-                                    html! {
-                                        <RoomCard 
-                                            room={room.clone()}
-                                            on_join={on_join_room.clone()}
-                                        />
-                                    }
-                                }) }
-                            </div>
-                        }
+                            } else {
+                                <div class="rooms-grid">
+                                    { for self.filtered_rooms.iter().map(|room| {
+                                        html! {
+                                            <RoomCard 
+                                                room={room.clone()}
+                                                on_join={on_join_room.clone()}
+                                            />
+                                        }
+                                    }) }
+                                </div>
+                            }
+                        </div>
                     </div>
+
+                    // Player Sidebar
+                    <PlayerSidebar 
+                        current_user={user.clone()}
+                        is_collapsed={self.sidebar_collapsed}
+                        on_toggle_collapse={link.callback(|_| LobbyMsg::ToggleSidebar)}
+                        on_player_select={link.callback(LobbyMsg::SelectPlayer)}
+                    />
                 </div>
 
                 // Create Room Modal
